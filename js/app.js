@@ -237,4 +237,4 @@ const dsiplayNewsHTML = (data) => {
         newsContainer.appendChild(newsDiv);
         toggleSpinner(false);
     })
-}
+}  
