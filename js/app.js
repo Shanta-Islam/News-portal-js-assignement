@@ -21,7 +21,7 @@ const fatchNewsDetails = newsId => {
         .then(data => newsDetailsModal(data))
         .catch(error => console.log(error))
 }
-const displayCatagories = catagories => {
+const displayCatagories = catagories => { 
     const newsCatagoriList = document.getElementById('newsCatagories');
     catagories.forEach(catagory => {
         const calagoryList = document.createElement('li');
