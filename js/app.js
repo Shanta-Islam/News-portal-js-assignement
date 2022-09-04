@@ -54,3 +54,14 @@ const makeBtnActive = (btnId, btnName) => {
     document.getElementById('blogBtn').classList.remove('text-white', 'bg-blue-700', 'md:bg-transparent', 'md:text-blue-700', 'dark:text-white');
     document.getElementById('questionAccordion').classList.add('hidden');
     document.getElementById('filterSection').classList.remove('hidden');
+
+
+    let el = activeBtn.parentElement.parentElement;
+    for (let i = 0; i < el.children.length; i++) {
+        let child = el.children[i];
+        child.classList.add('text-indigo-600');
+        if (child.innerText != btnName) {
+            child.classList.remove('text-indigo-600');
+        }
+    }
+}
