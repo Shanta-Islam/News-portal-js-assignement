@@ -65,6 +65,7 @@ const makeBtnActive = (btnId, btnName) => {
         }
     }
 }
+
 const dateCal = getDate => {
     let date = new Date(getDate);
     let milliseconds = date.getTime();
@@ -103,13 +104,14 @@ const ratingView = rating => {
 
     }
 }
+
 const closeModal = () => {
-    const modalContainer = document.getElementById('extralarge-modal');
+    const modalContainer = document.getElementById('large-modal');
     modalContainer.classList.add('hidden');
 }
 
 const newsDetailsModal = newsData => {
-    const modalContainer = document.getElementById('extralarge-modal');
+    const modalContainer = document.getElementById('large-modal');
     console.log(newsData.data);
     modalContainer.classList.remove('hidden');
     modalContainer.innerHTML = `
@@ -123,7 +125,7 @@ const newsDetailsModal = newsData => {
             </h3>
             <button onclick="closeModal()" type="button"
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                data-modal-toggle="extralarge-modal">
+                data-modal-toggle="large-modal">
                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd"
@@ -198,7 +200,7 @@ const dsiplayNewsHTML = (data) => {
         newsDiv.classList.add('mx-3', 'lg:mx-0', 'md:mx-3', 'mb-5');
         newsDiv.innerHTML = `
             <a onclick="fatchNewsDetails('${eachNews._id}')"
-            class="flex p-4 hover:cursor-pointer max-w-full flex-col bg-white rounded-lg border shadow-md md:flex-row hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700" data-modal-toggle="extralarge-modal">
+            class="flex p-4 hover:cursor-pointer max-w-full flex-col bg-white rounded-lg border shadow-md md:flex-row hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700" data-modal-toggle="large-modal">
             <img class="object-cover w-full h-96 rounded-t-lg md:h-auto md:w-48 lg:w-56 md:rounded-none md:rounded-lg lg:mr-4"
                 src="${eachNews.thumbnail_url}" alt="">
             <div class="flex justify-around flex-col p-4 leading-normal">
@@ -237,4 +239,141 @@ const dsiplayNewsHTML = (data) => {
         newsContainer.appendChild(newsDiv);
         toggleSpinner(false);
     })
-}  
+}
+
+const dsiplayNews = (news, catagoryName, sortField) => {
+    const newsContainer = document.getElementById('newsContainer');
+    const catagoryNewsInfo = document.getElementById('catagoryNewsInfo');
+    newsContainer.textContent = '';
+    if (news.status) {
+        catagoryNewsInfo.innerText = `${news.data.length} Items Found For Category ${catagoryName}`;
+        if (sortField === 'Most View') {
+            let data = sortTotal_view(news.data);
+            dsiplayNewsHTML(data);
+        }
+        else if (sortField === 'Most Rating') {
+            let data = sortTotal_rating(news.data);
+            dsiplayNewsHTML(data);
+        }
+    }
+    else {
+        catagoryNewsInfo.innerText = `No Items Found For Category ${catagoryName}`;
+        newsContainer.innerHTML = `<section class="container mx-auto">
+        <div class=" bg-white p-7">
+            <p class="text-center text-2xl text-black font-medium">No News Items Found</p>
+        </div>
+    </section>`
+        toggleSpinner(false);
+    }
+
+    document.getElementById('todayPiBtn').addEventListener('click', function () {
+        this.classList.remove('text-indigo-600');
+        this.classList.add('bg-indigo-600', 'text-white');
+        document.getElementById('trendingBtn').classList.remove('bg-indigo-600');
+        document.getElementById('trendingBtn').classList.add('text-indigo-600');
+        let filterdData = [];
+        news.data.forEach(eachNews => {
+            if (eachNews.others_info.is_todays_pick) {
+                filterdData.push(eachNews);
+            }
+        })
+        if (filterdData.length == 0) {
+            catagoryNewsInfo.innerText = `No Items Found For Category ${catagoryName}`;
+            newsContainer.innerHTML = `<section class="container mx-auto">
+            <div class=" bg-white p-7">
+                <p class="text-center text-2xl text-black font-medium">No News Items Found</p>
+            </div>
+        </section>`
+            toggleSpinner(false);
+        }
+        else {
+            catagoryNewsInfo.innerText = `${filterdData.length} Items Found For Category ${catagoryName}`;
+            newsContainer.innerHTML = `<section class="container mx-auto">
+            <div class=" bg-white p-7">
+                <p class="text-center text-2xl text-black font-medium">No News Items Found</p>
+            </div>
+        </section>`
+            toggleSpinner(false);
+            dsiplayNewsHTML(filterdData);
+        }
+    })
+
+    document.getElementById('trendingBtn').addEventListener('click', function () {
+        this.classList.remove('text-indigo-600');
+        this.classList.add('bg-indigo-600', 'text-white');
+        document.getElementById('todayPiBtn').classList.remove('bg-indigo-600');
+        document.getElementById('todayPiBtn').classList.add('text-indigo-600');
+        let filterdData = [];
+        news.data.forEach(eachNews => {
+            if (eachNews.others_info.is_trending) {
+                filterdData.push(eachNews);
+            }
+        })
+        if (filterdData.length == 0) {
+            catagoryNewsInfo.innerText = `No Items Found For Category ${catagoryName}`;
+            newsContainer.innerHTML = `<section class="container mx-auto">
+            <div class=" bg-white p-7">
+                <p class="text-center text-2xl text-black font-medium">No News Items Found</p>
+            </div>
+        </section>`
+            toggleSpinner(false);
+        }
+        else {
+            catagoryNewsInfo.innerText = `${filterdData.length} Items Found For Category ${catagoryName}`;
+            newsContainer.innerHTML = `<section class="container mx-auto">
+            <div class=" bg-white p-7">
+                <p class="text-center text-2xl text-black font-medium">No News Items Found</p>
+            </div>
+        </section>`
+            toggleSpinner(false);
+            dsiplayNewsHTML(filterdData);
+        }
+    })
+
+    document.getElementById('mostviewSortBtn').addEventListener('click', function () {
+        const sortField = document.getElementById('dropdownDivider');
+        const sortBtnTxt = document.getElementById('sortBtnTxt');
+        dsiplayNewsHTML(sortTotal_view(news.data));
+        sortBtnTxt.innerText = 'Most View';
+        sortField.classList.add('hidden');
+    })
+
+    document.getElementById('mostratingSortBtn').addEventListener('click', function () {
+        const sortField = document.getElementById('dropdownDivider');
+        const sortBtnTxt = document.getElementById('sortBtnTxt');
+        dsiplayNewsHTML(sortTotal_rating(news.data));
+        sortBtnTxt.innerText = 'Most Rating';
+        sortField.classList.add('hidden');
+    })
+
+}
+fatchCatagoryNews('01', 'Breaking News');
+document.getElementById('newsBtn').addEventListener('click', function () {
+    this.classList.remove('hover:bg-gray-100', 'md:hover:bg-transparent', 'md:hover:text-blue-700', 'dark:text-gray-400', 'md:dark:hover:text-white', 'dark:hover:bg-gray-700', 'dark:hover:text-white', 'md:dark:hover:bg-transparent', 'dark:border-gray-700');
+    this.classList.add('text-white', 'bg-blue-700', 'md:bg-transparent', 'md:text-blue-700', 'dark:text-white');
+    document.getElementById('blogBtn').classList.add('hover:bg-gray-100', 'md:hover:bg-transparent', 'md:hover:text-blue-700', 'dark:text-gray-400', 'md:dark:hover:text-white', 'dark:hover:bg-gray-700', 'dark:hover:text-white', 'md:dark:hover:bg-transparent', 'dark:border-gray-700');
+    document.getElementById('blogBtn').classList.remove('text-white', 'bg-blue-700', 'md:bg-transparent', 'md:text-blue-700', 'dark:text-white');
+
+    document.getElementById('questionAccordion').classList.add('hidden');
+    document.getElementById('newsContainer').classList.remove('hidden');
+    document.getElementById('filterSection').classList.remove('hidden');
+    if (document.getElementById('catagoryNewsInfo').innerText === 'Answer Of Some Of Questions') {
+        fatchCatagoryNews('01', 'Breaking News');
+        makeBtnActive('01', 'Breaking News');
+
+    }
+})
+
+document.getElementById('blogBtn').addEventListener('click', function () {
+    this.classList.remove('hover:bg-gray-100', 'md:hover:bg-transparent', 'md:hover:text-blue-700', 'dark:text-gray-400', 'md:dark:hover:text-white', 'dark:hover:bg-gray-700', 'dark:hover:text-white', 'md:dark:hover:bg-transparent', 'dark:border-gray-700');
+    this.classList.add('text-white', 'bg-blue-700', 'md:bg-transparent', 'md:text-blue-700', 'dark:text-white');
+
+    document.getElementById('newsBtn').classList.add('hover:bg-gray-100', 'md:hover:bg-transparent', 'md:hover:text-blue-700', 'dark:text-gray-400', 'md:dark:hover:text-white', 'dark:hover:bg-gray-700', 'dark:hover:text-white', 'md:dark:hover:bg-transparent', 'dark:border-gray-700');
+    document.getElementById('newsBtn').classList.remove('text-white', 'bg-blue-700', 'md:bg-transparent', 'md:text-blue-700', 'dark:text-white');
+
+    const newsContainer = document.getElementById('newsContainer');
+    newsContainer.classList.add('hidden');
+    document.getElementById('questionAccordion').classList.remove('hidden');
+    document.getElementById('filterSection').classList.add('hidden');
+    document.getElementById('catagoryNewsInfo').innerText = `Answer Of Some Of Questions`;
+})
