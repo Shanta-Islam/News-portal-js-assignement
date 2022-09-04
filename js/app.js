@@ -65,3 +65,41 @@ const makeBtnActive = (btnId, btnName) => {
         }
     }
 }
+const dateCal = getDate => {
+    let date = new Date(getDate);
+    let milliseconds = date.getTime();
+    let d = new Date();
+    d.setTime(milliseconds);
+    return moment(d).format("ddd MMM DD, YYYY HH:mm:ss ");
+
+}
+
+const ratingView = rating => {
+    let ratingArray = [];
+
+    if (!Number.isInteger(rating) && !isNaN(rating) && rating != null) {
+        let intRrating = Math.floor(rating);
+        for (let i = 0; i < intRrating; i++) {
+            ratingArray.push("<i class='fa-solid fa-star'></i>");
+        }
+        ratingArray.push("<i class='fa-solid fa-star-half-stroke'></i>");
+        for (let i = 1; i < 5 - intRrating; i++) {
+            ratingArray.push("<i class='fa-regular fa-star'></i>");
+        }
+        return ratingArray.join(' ');
+    }
+    else if (Number.isInteger(rating)) {
+        for (let i = 0; i < rating; i++) {
+            ratingArray.push("<i class='fa-solid fa-star'></i>");
+        }
+        return ratingArray.join(' ');
+    }
+    else if (isNaN(rating) || rating === null) {
+        for (let i = 1; i <= 5; i++) {
+
+            ratingArray.push("<i class='fa-regular fa-star'></i>");
+        }
+        return ratingArray.join(' ');
+
+    }
+}
